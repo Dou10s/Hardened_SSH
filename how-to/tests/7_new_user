@@ -1,0 +1,37 @@
+
+# This attack assumes that an adversary will compromise a root level account and add a new key under a new user to maintain access
+___________________________________________________________________________________
+BASE SYSTEM (on Linux-Base and Server and Jump)
+___________________________________________________________________________________
+(as ansible sudo su to root)
+
+1. adduser bob -a -G sudo -d /home/bob
+    passwd bob # set a password
+2. ssh-keygen -t rsa -f ~/.ssh/attacker 
+# do this after the account has been created on each system
+
+3. ssh-copy-id -i ~/.ssh/attacker.pub Linux-Base-Server.sshlab
+4. ssh-copy-id -i ~/.ssh/attacker.pub Linux-Base-Jump.sshlab
+5. ssh-copy-id -i ~/.ssh/attacker.pub Linux-Base.sshlab
+
+# the attacker will need to enter a password for each key copy since they are not piggybacking off an existing user key
+# This attack may not seem overly useful, if an attacker already has root, there are many other ways they can acheive persistance.  But using the existing SSH architecture can have advantages depending on how the system is monitored. 
+
+# the attacker Bob can continue to log in using his key, this will only be caught if system users are audited
+___________________________________________________________________________________
+HARDENED SYSTEM
+___________________________________________________________________________________
+
+1. run ansible plays in /plays
+    a. ansible-playbook ./provision-keys.yml -b -K
+    b. ansible-playbook ./enforce-config.yml -b -K
+
+2. run the same attack as above
+
+3. run ansible plays in /plays
+    a. ansible-playbook ./provision-keys.yml -b -K
+    b. ansible-playbook ./enforce-config.yml -b -K
+
+# the attacker can make keys, and even add them to the authorized keys file ( /etc/ssh/authorized_keys since they have root permissions) but the file will be reset by ansible based on the list of users that should be in the system.
+# However, the attacker cannot log in with the new key if they have only user-level access. Since the new attacker key is not signed by the trusted ssh CA, it cannot pass the requirements in the /etc/ssh/authorized_keys file
+

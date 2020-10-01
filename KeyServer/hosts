@@ -1,0 +1,17 @@
+# store this in /etc/hosts
+127.0.0.1   localhost
+127.0.1.1   Key-Server.sshlab
+
+10.8.8.2    Key-Server.sshlab   key-server
+10.8.8.10   Linux-Base.sshlab   linux-base
+10.8.8.11   Linux-Base-Server.sshlab   linux-base-server
+10.8.8.20   Linux-Hardened.sshlab   linux-hardened
+10.8.8.21   Linux-Hardened-Server.sshlab   linux-hardened-server
+10.8.8.100  Windows-Base.sshlab windows-Base
+10.8.8.200  Windows-Hardened.sshlab windows-hardened
+10.8.8.50   Linux-Base-Jump.sshlab   linux-base-jump
+10.8.8.51   Linux-Hardened-Jump.sshlab   linux-hardened-jump
+
+::1 localhost   ip6-localhost   ip6-loopback
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters

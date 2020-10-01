@@ -1,0 +1,32 @@
+# ideally, the CA private keys (host and user) should be stored on an secured system that is not running other network services, 
+# for this experiment the keys and certs for each host and user were generated offline and copied to the machines during creation by vagrant
+
+mkdir ca curly keyserver larry linux_base moe attacker windows_base windows_hardened ansible
+
+ssh-keygen -t rsa -f ./ca/ca_user_key -C ca_user_key 
+ssh-keygen -t rsa -f ./ca/ca_host_key -C ca_host_key
+ssh-keygen -t rsa -f ./keyserver/ssh_host_rsa_key -C keyserver
+
+ssh-keygen -t rsa -f ./linux_base/ssh_host_rsa_key -C linux-base
+ssh-keygen -t rsa -f ./linux_base_server/ssh_host_rsa_key -C linux-base-server
+ssh-keygen -t rsa -f ./linux_base_jump/ssh_host_rsa_key -C linux-base-jump
+ssh-keygen -t rsa -f ./linux_hardened/ssh_host_rsa_key -C linux-hardened
+ssh-keygen -t rsa -f ./linux_hardened_server/ssh_host_rsa_key -C linux-hardened-server
+ssh-keygen -t rsa -f ./linux_hardened_jump/ssh_host_rsa_key -C linux-hardened-jump
+ssh-keygen -t rsa -f ./windows_base/ssh_host_rsa_key -C windows-base
+ssh-keygen -t rsa -f ./windows_hardened/ssh_host_rsa_key -C windows-hardened
+ssh-keygen -t rsa -f ./larry/id_rsa -C larry
+ssh-keygen -t rsa -f ./moe/id_rsa -C moe
+ssh-keygen -t rsa -f ./curly/id_rsa -C curly
+ssh-keygen -t rsa -f ./ansible/id_rsa -C ansible
+ssh-keygen -t rsa -f ./attacker/id_rsa -C attacker
+
+ssh-keygen -s ./ca/ca_host_key -I key-server -h -Z Key-Server.sshlab -V -1w:+54w ./keyserver/ssh_host_rsa_key.pub
+ssh-keygen -s ./ca/ca_host_key -I linux-hardened -h -Z Linux-Hardened.sshlab -V -1w:+54w ./linux_hardened/ssh_host_rsa_key.pub
+ssh-keygen -s ./ca/ca_host_key -I linux-hardened-server -h -Z Linux-Hardened-Server.sshlab -V -1w:+54w ./linux_hardened_server/ssh_host_rsa_key.pub
+ssh-keygen -s ./ca/ca_host_key -I linux-hardened-jump -h -Z Linux-Hardened-Jump.sshlab -V -1w:+54w ./linux_hardened_jump/ssh_host_rsa_key.pub
+ssh-keygen -s ./ca/ca_host_key -I windows-hardened -h -Z Windows-Hardened.sshlab -V -1w:+54w ./windows_hardened/ssh_host_rsa_key.pub
+ssh-keygen -s ./ca/ca_user_key -I larry -Z larry -n larry -V -1w:+54w ./larry/id_rsa.pub
+ssh-keygen -s ./ca/ca_user_key -I moe -Z moe -n moe -V -1w:+54w ./moe/id_rsa.pub
+ssh-keygen -s ./ca/ca_user_key -I curly -Z curly -n curly -V -1w:+54w ./curly/id_rsa.pub
+ssh-keygen -s ./ca/ca_user_key -I ansible -Z ansible -n ansible -V -1w:+54w ./ansible/id_rsa.pub

@@ -1,0 +1,4 @@
+# store this file on each server as /etc/ssh/sshd_config/
+
+# user1 from="domain.corp.com"
+# user2

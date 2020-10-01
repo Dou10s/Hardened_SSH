@@ -1,0 +1,41 @@
+
+# This attack assumes that an adversary will compromise an existing user account and add a new key maintain access
+___________________________________________________________________________________
+BASE SYSTEM (on Linux-Base-Server)
+___________________________________________________________________________________
+(as moe)
+# the user's authorized public keys are on the ~/.ssh/authorized_keys file
+
+1. cat authorized keys files take note of the keys
+
+(as 'attacker' moe, log in as moe in another window)
+(on Linux-Base)
+# assume that the private keys are not available on the local machines for the attacker to use (you can delete the existing id_rsa private keys for moe on Server and Jump)
+
+1. ssh-keygen -t rsa -f ~/.ssh/attacker 
+2. ssh-copy-id -i ~/.ssh/attacker.pub Linux-Base-Server.sshlab
+3. ssh-copy-id -i ~/.ssh/attacker.pub Linux-Base-Jump.sshlab
+3. ssh-copy-id -i ~/.ssh/attacker.pub Linux-Base.sshlab
+
+# note that the attacker can add their own key to the account rather easily, granting them persistance access as Moe.  They could even acheive this through exploiting a key in the agent (attack 3-5), or by supplying a password if SSH has password authentication enabled.  The attacker access would persist even after the compromised password has been changed.
+
+(as moe)
+# look at the evidence of the attack
+
+1. cat authorized keys files take note of the keys
+# if a user does not regularly monitor their authorized keys file, there could be keys added without their knowledge
+___________________________________________________________________________________
+HARDENED SYSTEM
+___________________________________________________________________________________
+
+1. run ansible plays in /plays
+    a. ansible-playbook ./provision-keys.yml -b -K
+    b. ansible-playbook ./enforce-config.yml -b -K
+
+2. run the same attack as above
+# note that the initial access for this attack is much harder since attack 3-5 do not work (without the physical access to the Yubikey and pin)
+and password authentication is disabled by default.
+
+# the attacker can make keys, and even add them to the authorized keys file (user's local authorized keys only, not the /etc/ssh/authorized_keys) using ssh-copy-id.
+# However, the attacker cannot log in with the new key if they have only user-level access. Since the new attacker key is not signed by the trusted ssh CA, it cannot pass the requirements in the /etc/ssh/authorized_keys file
+

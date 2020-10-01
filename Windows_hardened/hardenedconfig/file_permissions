@@ -1,0 +1,5 @@
+publickeys  644
+certs       644
+privatekeys 600
+
+~/.ssh/     700

@@ -1,0 +1,27 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "gusztavvargadr/windows-10"
+  config.vm.box_check_update = true
+  config.vm.hostname = "Windows-base"
+  config.vm.network "private_network", type: "dhcp"
+
+  config.vm.provider "hyperv" do |hv|
+      hv.cpus = 2
+      hv.maxmemory = "4096"
+      hv.vmname = "Windows-Base"
+      hv.vm_integration_services = { 'time_synchronization' => true }
+  end
+
+  config.vm.provider "virtualbox" do |vb|
+      vb.cpus = 8
+      vb.memory = "8096"
+      vb.name = "Windows-Base"
+  end 
+  #config.vm.provision "shell", inline: <<-SHELL
+  # need to set up ssh over winrm
+  #   apt-get update
+  #   apt-get install -y apache2
+  # SHELL
+end

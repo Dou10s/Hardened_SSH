@@ -1,0 +1,7 @@
+# store this file on each server as /etc/ssh/sshd_config/
+
+# user1 from="domain.corp.com"
+
+# ansible is a base user, other users are added via an ansible playbook
+
+ansible

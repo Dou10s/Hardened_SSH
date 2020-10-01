@@ -1,0 +1,8 @@
+
+# This is the ssh client system-wide configuration file this is the base configuration for Debian 10
+# all commented lines have been removed for readability and comparison with the hardened versions
+
+Host *
+    SendEnv LANG LC_*
+    HashKnownHosts yes
+    GSSAPIAuthentication yes

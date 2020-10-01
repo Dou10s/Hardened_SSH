@@ -1,0 +1,76 @@
+# https://github.com/drduh/config/blob/master/sshd_config
+# https://linux.die.net/man/5/sshd_config
+
+Protocol 2
+Port 22
+# May use a nonstandard port to decrease brute-force attacks on public-facing gateway
+# Port 4266
+# change below to inet for ipv4 or inet6 for ipv6 only
+AddressFamily any
+# change the below for listining on one interface for multi-homed hosts
+ListenAddress 0.0.0.0
+
+# HostKey /etc/ssh/ssh_host_key
+# HostKey /etc/ssh/ssh_host_rsa_key
+
+# the below specifies the path to the ssh certificate that is presented to users
+HostCertificate /etc/ssh/*rsa_key-cert.pub
+
+# the setting below would allow a server to have externally stored pgp keys
+# HostKeyAgent "SSH_AUTH_SOCK"
+TrustedUserCAKeys /etc/ssh/ca_user_key.pub
+
+PermitRootLogin no
+# AllowUsers sysadm
+# AllowGroups sshusers
+# DenyUsers
+# enable the below for Windows
+# DenyGroups Administrators
+
+SyslogFacility AUTH
+# below for Windows
+# SyslogFacility Local0
+# change this to Debug3 for extensive logs - may compromise user privacy but may be good for corporate monitoring
+LogLevel VERBOSE
+LoginGraceTime 10s
+MaxStartups 1
+MaxSessions 2
+MaxAuthTries 3
+ClientAliveInterval 30
+ClientAliveCountMax 20
+StrictModes yes
+
+AuthenticationMethods publickey
+# use the below for MFA with yubikey using pam
+# AuthenticationMethods publickey, keyboard-interactive pam
+PubkeyAuthentication yes
+# set this to a global directory 
+AuthorizedKeysFile /etc/ssh/authorized_keys
+AuthorizedPrincipalsFile /etc/ssh/auth_principals
+IgnoreRhosts yes
+PasswordAuthentication no
+PermitEmptyPasswords no
+HostbasedAuthentication no
+# Change this to yes for MFA using Yubikey
+ChallengeResponseAuthentication no
+
+Compression no
+# Compression yes
+RekeyLimit 256M 1H
+AllowTcpForwarding no
+X11Forwarding no
+GatewayPorts no
+PermitTunnel no
+TCPKeepAlive yes
+UseDNS no
+PrintMotd no
+PrintLastLog yes
+PermitUserEnvironment no
+
+Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com
+MACs hmac-sha2-512-etm@openssh.com
+KexAlgorithms curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256
+HostKeyAlgorithms ssh-ed25519-cert-v01@openssh.com,ssh-rsa-cert-v01@openssh.com,ssh-ed25519,ssh-rsa
+#Subsystem sftp  /usr/lib/sftp-server
+#Match User proxy
+#       AllowTcpForwarding yes

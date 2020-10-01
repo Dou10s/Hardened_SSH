@@ -1,0 +1,89 @@
+# https://geektechstuff.com/2019/11/03/using-ansible-to-create-and-manage-users-linux-raspberry-pi/
+---
+- hosts: linux
+  become: yes
+  vars_files: 
+    - vars/users.yml
+  tasks:
+
+# create a temporary password of 'initpass' for new user accounts
+  - name: enroll all users in linux systems
+    user:
+      name: "{{ item.name }}"
+      shell: /bin/bash
+      create_home: yes
+      password: "$6$mysecretsalt$VnhpybRZqlyFDTG39ryYeQc4aH4tWLracO./mbZZ1W4eVgkGnD8oZ6RHWXY18PewySCHEwDDgPwZSmqU4Z4fT0"
+      update_password: on_create
+    with_items: "{{ users }}"
+  
+# add a task to configure .bashrc with a hardened version including using gpg for agent, linking agent to keys
+  
+  - name: create ssh folders for users
+    file: 
+      path: "/home/{{ item.name }}/.ssh"
+      owner: "{{ item.name }}"
+      group: "{{ item.name }}"
+      state: directory
+    with_items: "{{ users }}"
+  
+# this folder with certs has two keys and a certificate, eventually it will 
+# have just the cert and the private key will be on a yubikey
+
+  - name: copy ssh keys to user folders
+    copy:
+      src: "/plays/certs/{{ item.name }}/"
+      dest: "/home/{{ item.name }}/.ssh/"
+      owner: "{{ item.name }}"
+      group: "{{ item.name }}"
+      mode: '0600'
+    with_items: "{{ users }}"
+  
+  # add a task to set the local user sshconfig?
+  # add a task to delete the local user authorized_keys file (this does not really help with authentication anyway since only /etc/ssh/authorized_keys is referenced)
+
+  - name: Load authorized principals taken from file
+    copy:
+      src: /plays/hardenedconfig/auth_principals
+      dest: /etc/ssh/auth_principals
+      mode: '0644'
+      owner: root
+      group: root
+    with_items: "{{ users }}"
+
+  - name: Set authorized principals file contents
+    lineinfile:
+      path: /etc/ssh/auth_principals
+      line: '{{ item.name }}'
+      state: present
+      mode: '644'
+      owner: root
+      group: root
+    with_items: "{{ users }}"
+
+  # kill all user processes in account to be removed
+  - name: kill users to be removed
+    shell: "if pgrep -u {{ item.name }}; then kill -9 $(pgrep -u {{ item.name }}); fi"
+    with_items: "{{ remove }}"
+
+  - name: Remove user accounts
+    user:
+      name: "{{ item.name }}"
+      state: absent
+      remove: yes
+      force: yes
+    with_items: "{{ remove }}"
+
+  - name: remove authorized principals file contents
+    lineinfile:
+      path: /etc/ssh/auth_principals
+      line: "{{ item.name }}"
+      state: absent
+      mode: '644'
+      owner: root
+      group: root
+    with_items: "{{ remove }}"
+
+  - name: reload sshd
+    service:
+      name: sshd
+      state: reloaded

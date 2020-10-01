@@ -1,0 +1,21 @@
+
+# assume the attacker has already compromised the host and elevated privileges
+
+___________________________________________________________________________________
+BASE SYSTEM
+___________________________________________________________________________________
+read user key
+1. cat /home/larry/.ssh/id_rsa   # the key should exist 
+    A. if the key is NOT password protected, then the private key is exposed and can be used by the attacker
+    B. if the key is password protected (ends in ==) then the key can be copied off the system for the password to be cracked OR a keylogger can be used to capture the password for the key
+
+attack succeeds
+___________________________________________________________________________________
+HARDENED SYSTEM
+___________________________________________________________________________________
+read user key
+1. cat /home/larry/.ssh/*   # there should NOT be a key here (it is stored on the YUBIKEY)
+    A. The private key would need to be extracted from the YUBIKEY
+    B. The private key would need to be compromised from whatever machine created the key if that machine kept a local copy (hopefully secure)
+
+attack fails

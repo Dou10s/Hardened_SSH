@@ -1,0 +1,7 @@
+users:
+  - name: larry
+  - name: moe
+  - name: curly
+
+remove:
+  - name: bob

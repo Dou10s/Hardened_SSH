@@ -1,0 +1,29 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "gusztavvargadr/windows-10"
+  config.vm.box_check_update = true
+  config.vm.hostname = "Windows-Hardened"
+  #config.vm.network "private_network", type: "dhcp",
+  #  name: "vboxnet3"
+
+#  config.vm.provider "hyperv" do |hv|
+#      hv.cpus = 2
+#      hv.maxmemory = "4096"
+#      hv.vmname = "Windows-Base"
+#      hv.vm_integration_services = { 'time_synchronization' => true }
+#  end
+
+  config.vm.provider "virtualbox" do |vb|
+      vb.cpus = 2
+      vb.memory = "4096"
+      vb.name = "Windows-Hardened"
+  end 
+
+  config.vm.provision "file", source: "./ansible.pub", destination: "$HOME/"
+  config.vm.provision "file", source: "./keys", destination: "$HOME/ansible"
+  config.vm.provision "file", source: "./hosts", destination: "$HOME/hosts"
+  config.vm.provision "shell", path: "Setupscript.sh"
+
+end

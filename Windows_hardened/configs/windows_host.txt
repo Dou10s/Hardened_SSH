@@ -1,0 +1,14 @@
+# This is the setup for a windows 10 host with the Yubikey, it will not cover yubikey provisioning This assumes the key is already set up with valid pgp keys (all subkeys).
+# install chocolatey
+
+# as admin:
+choco install gpg4win
+choco install golang
+choco install git
+
+
+
+
+# adding your public GPG key to the agent
+gpg --import 'C:\path\to\publickey\0xFINGERPRINT-DATE.txt'
+

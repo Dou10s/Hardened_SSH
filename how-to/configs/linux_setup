@@ -1,0 +1,12 @@
+# https://electronicassist.freshdesk.com/support/solutions/articles/44001312978-how-to-share-and-connect-to-devices-using-the-command-line-interface
+
+the linux machines should be able to set up automatically using vagrant and hyper-vagrant
+
+you need to download and use netusb from the article above to use the yubikey in a VM client
+
+
+
+
+
+
+

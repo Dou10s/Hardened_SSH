@@ -1,0 +1,26 @@
+# this is how to set up the base and hardened versions of Windows for SSH hardening
+
+
+########################################################
+BASE WINDOWS
+########################################################
+
+1. Start with the Windows base version from https://www.microsoft.com/en-us/evalcenter/evaluate-windows-10-enterprise
+2. Create a VM with 
+# Update the machine
+
+select updates
+
+add openssh Server
+    add/remove programs > optional features > add openssh_server
+
+
+# install chocolatey
+
+# Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+
+# set up OpenSSH
+# in an admin ps
+
+choco install openssh -params '"/SSHServerFeature"' --force
+New-ItemProperty -Path "HKLM:\SOFTWARE\OpenSSH" -Name DefaultShell -Value "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -PropertyType String -Force

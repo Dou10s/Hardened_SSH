@@ -1,0 +1,3 @@
+iface eth0 inet static
+      address 10.8.8.51
+      netmask 255.255.255.0

@@ -1,0 +1,23 @@
+# https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html#intro-inventory
+
+all:
+    hosts:
+        Key-Server.sshlab:
+    children:
+        windows:
+            hosts:
+                Windows-Hardened.sshlab:
+        linux:
+            hosts:
+                Linux-Hardened.sshlab:
+                Linux-Hardened-Server.sshlab:
+                Linux-Hardened-Jump.sshlab:
+        base-linux:
+            hosts:
+                Linux-Base.sshlab:
+                Linux-Base-Server.sshlab:
+                Linux-Base-Jump.sshlab:
+        base-windows:
+            hosts:
+                Windows-Base.sshlab
+                

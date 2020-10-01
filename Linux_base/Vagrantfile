@@ -1,0 +1,24 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "generic/debian10"
+  config.vm.box_check_update = true
+  config.vm.hostname = "Linux-Base.sshlab"
+
+  config.vm.provider "hyperv" do |hv|
+      hv.cpus = 2
+      hv.maxmemory = "4096"
+      hv.vmname = "Linux-Base"
+      hv.vm_integration_services = { 'time_synchronization' => true }
+  end
+  
+  
+  config.vm.provision "file", source: "./ansible.pub", destination: "$HOME/"
+  config.vm.provision "file", source: "./certs", destination: "$HOME/certs"
+  config.vm.provision "file", source: "./interface", destination: "$HOME/eth0"
+  config.vm.provision "file", source: "./hosts", destination: "$HOME/hosts"
+  config.vm.provision "file", source: "./baseconfig", destination: "$HOME/baseconfig"
+  config.vm.provision "shell", path: "Setupscript.sh"
+
+end

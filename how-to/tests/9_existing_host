@@ -1,0 +1,23 @@
+
+
+___________________________________________________________________________________
+BASE SYSTEM 
+___________________________________________________________________________________
+(Linux-Base)
+(as curly)
+1. ssh Linux-Base-Server
+2. exit
+
+(as ansible su to root)
+1. switch Linux-Base-Server ip with Linux-Base-Jump in /etc/hosts
+2. exit
+
+(as curly)
+1. ssh Linux-Base-Server
+
+# note that by default SSH will not connect to a host with a changed key if it is already in the known hosts
+___________________________________________________________________________________
+HARDENED SYSTEM as curly
+___________________________________________________________________________________
+
+1. Same as above

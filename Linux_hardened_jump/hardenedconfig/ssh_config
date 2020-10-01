@@ -1,0 +1,47 @@
+# https://github.com/drduh/config/blob/master/ssh_config
+# https://linux.die.net/man/5/ssh_config
+
+#bastion host settings
+### The Bastion Host
+# Host bastion-host-nickname
+#   HostName bastion-hostname
+
+### The Remote Host
+Host Linux-Hardened-Jump.sshlab
+  HostName remote-hostname
+  ProxyJump Linux-Hardened-Server
+
+Host *.sshlab
+  HashKnownHosts yes
+  VisualHostKey yes
+  PasswordAuthentication no
+  # the below file uses the identity certificate below for any connection in the host group specificed above
+  # IdentityFile ~/.ssh/id_rsa
+  ChallengeResponseAuthentication no
+  StrictHostKeyChecking yes
+  ServerAliveInterval 300
+  ServerAliveCountMax 2
+  Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com
+  MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com
+  KexAlgorithms curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256
+  HostKeyAlgorithms ssh-rsa-cert-v01@openssh.com,ssh-rsa
+
+Host *
+  # AddressFamily inet #inet6 #any
+  HashKnownHosts yes
+  VisualHostKey yes
+  PasswordAuthentication no
+  # Change the below to yes for MFA using Yubikey FIDO or OTP
+  ChallengeResponseAuthentication no
+  StrictHostKeyChecking ask
+  # Change the below to no to speed up connection, may break some host key verification if IP address changes
+  VerifyHostKeyDNS no
+  ForwardAgent no
+  ForwardX11 no
+  ForwardX11Trusted no
+  ServerAliveInterval 300
+  ServerAliveCountMax 2
+  Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com
+  MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com
+  KexAlgorithms curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256
+  HostKeyAlgorithms ssh-rsa-cert-v01@openssh.com,ssh-rsa

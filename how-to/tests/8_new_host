@@ -1,0 +1,21 @@
+
+BASE SYSTEM
+___________________________________________________________________________________
+
+(as curly on Linux-Base)
+1. ssh Linux-Base-Server
+
+# notice the warning that appears, this ip is given in the /etc/hosts file - but if the host is spoofed, the only verification of authenticity is checking the host key out-of-band (call a sysadmin)
+
+2. change the /etc/hosts file entry for Linux-Base-Jump to the entry for Windows-Base (switch the last octet)
+
+# since this is the first time curly has connected to Linux-Base-Jump, the user will have to Trust On First Use (TOFU). If not verified out of band, the user has unknowingly connected to the wrong machine! This could be an attacker controlled machine
+
+___________________________________________________________________________________
+HARDENED SYSTEM
+___________________________________________________________________________________
+
+1. try the same attack as above but replacing Linux-Hardened-Jump with Linux-Base-Jump
+
+# the prompt should be different - normally in the hardened config you do not need TOFU since the keys are signed by a trusted CA, a TOFU request should be a red flag
+# options can be added to further lock down SSH so only signed servers will be trusted

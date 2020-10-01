@@ -1,0 +1,15 @@
+# These instructions walk through how to add Yubikey PGP keys 
+# https://github.com/drduh/YubiKey-Guide
+
+
+# if you are using a hypervisor that does not do usb passthrough for non-storage devices (hyper-v), use the trial version of net-usb to share the yubikey with the guest OS
+# https://www.net-usb.com/downloads/
+
+
+
+
+
+
+ykman openpgp set-touch aut fixed
+ykman openpgp set-touch sig fixed
+ykman openpgp set-touch enc fixed

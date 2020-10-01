@@ -1,0 +1,14 @@
+# These instructions walk through how to add Yubikey PGP keys 
+# https://github.com/drduh/YubiKey-Guide
+
+
+
+
+
+
+
+
+
+ykman openpgp set-touch aut fixed
+ykman openpgp set-touch sig fixed
+ykman openpgp set-touch enc fixed

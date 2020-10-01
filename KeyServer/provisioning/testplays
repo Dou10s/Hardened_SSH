@@ -1,0 +1,5 @@
+ansible linux -m ping -b -K
+# run the ping module (-m) while becoming root (-b) and ask for password (-K)
+
+ansible linux -a whoami -b -K
+# run the command (-a) whoami

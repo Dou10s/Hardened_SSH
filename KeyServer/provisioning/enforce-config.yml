@@ -1,0 +1,73 @@
+# a play for enforcing the needed config for SSH
+---
+- hosts: linux
+  become: yes
+  tasks:
+
+  - name: copy ssh config
+    copy:
+      src: /plays/hardenedconfig/ssh_config
+      dest: /etc/ssh/ssh_config
+      owner: root
+      group: root
+      mode: "0644"
+
+  - name: copy sshd config
+    copy:
+      src: /plays/hardenedconfig/sshd_config
+      dest: /etc/ssh/sshd_config
+      owner: root
+      group: root
+      mode: "0644"
+
+  - name: copy ca user keys, this is referenced by sshd config to validate users
+    copy:
+      src: /plays/hardenedconfig/ca_user_key.pub
+      dest: /etc/ssh/ca_user_key.pub
+      owner: root
+      group: root
+      mode: "0644"
+
+  - name: copy known hosts file, this contains a cert-authority for all hosts in the .sshlab domain
+    copy:
+      src: /plays/hardenedconfig/ssh_known_hosts
+      dest: /etc/ssh/ssh_known_hosts
+      owner: root
+      group: root
+      mode: "0644"
+
+  - name: copy authorized keys file
+    copy:
+      src: /plays/hardenedconfig/ssh_known_hosts
+      dest: /etc/ssh/ssh_known_hosts
+      owner: root
+      group: root
+      mode: "0644"
+  
+  - name: enforce ssh host key permissions
+    file:
+      path: /etc/ssh/ssh_host_rsa_key
+      owner: root
+      group: root
+      mode: "0600"
+
+  - name: enforce ssh host pubkey permissions
+    file:
+      path: /etc/ssh/ssh_host_rsa_key.pub
+      owner: root
+      group: root
+      mode: "0644"
+  
+  - name: enforce ssh host cert permissions
+    file:
+      path: /etc/ssh/ssh_host_rsa_key-cert.pub
+      owner: root
+      group: root
+      mode: "0644"
+  
+  # add something to enforce local configs? in the user directories?
+
+  - name: reload sshd
+    service:
+      name: sshd
+      state: reloaded
